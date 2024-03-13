@@ -4,7 +4,7 @@
 Create your deck:
 ![image](https://github.com/Spasa98/KnightsAndDiamonds/assets/121055100/34c1d229-f264-42d7-a9f8-e3a026cf13f5)
 
-challenge your opponent:
+Challenge your opponent:
 ![image](https://github.com/Spasa98/KnightsAndDiamonds/assets/121055100/994142ea-37a6-4828-8a01-6183f056762c)
 
 Whait for opponent to accept the challenge:
