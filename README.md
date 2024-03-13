@@ -12,6 +12,7 @@ Whait for opponent to accept the challenge:
 
 And play:
 ![image](https://github.com/Spasa98/KnightsAndDiamonds/assets/121055100/dbda8c58-b604-4a2f-8941-8fcd03e437a2)
+![image](https://github.com/Spasa98/KnightsAndDiamonds/assets/121055100/71a580f4-430e-47ef-a9df-b0a34a091693)
 
 
 
