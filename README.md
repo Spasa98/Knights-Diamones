@@ -9,7 +9,7 @@ Create your deck:
 Challenge your opponent:
 ![image](https://github.com/Spasa98/KnightsAndDiamonds/assets/121055100/994142ea-37a6-4828-8a01-6183f056762c)
 
-Whait for opponent to accept the challenge:
+Wait for opponent to accept the challenge:
 ![image](https://github.com/Spasa98/KnightsAndDiamonds/assets/121055100/fd28e097-73de-4e99-b180-fcfba936cc01)
 
 And play:
