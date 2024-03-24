@@ -16,10 +16,6 @@ namespace knights_and_diamonds.Controllers
 	[Route("[controller]")]
 	public class RPSGameController : ControllerBase
 	{
-		/*
-				private readonly KnightsAndDiamondsContext context;
-				public UnitOfWork unitOfWork { get; set; }
-        */
 		private readonly KnightsAndDiamondsContext _context;
 		public IRPSGameService _pregameservice { get; set; }
 		public IUserService _userService { get; set; }

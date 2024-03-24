@@ -23,6 +23,16 @@ namespace DAL.Repositories
             get { return _context as KnightsAndDiamondsContext; }
         }
 
+        public async Task<bool> UserOwnesDeck(int userID,int deckID)
+        {
+            var deck = await this.Context.Decks?.Where(x => x.UserID == userID && x.ID == deckID).FirstOrDefaultAsync();
+            if (deck == null)
+            {
+                return false;
+            }
+            else return true;
+        }
+
         public async Task<Deck> AddDeck(Deck deck)
         {
             var user = await this.Context.Users.FindAsync(deck.UserID);

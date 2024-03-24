@@ -4,6 +4,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using BLL.Services.Contracts;
 using BLL.Services;
+using System.Security.Claims;
+using Microsoft.AspNetCore.Authorization;
 
 namespace knights_and_diamonds.Controllers
 {
@@ -11,16 +13,12 @@ namespace knights_and_diamonds.Controllers
     [Route("[controller]")]
     public class DeckController : ControllerBase
     {
-        /*
-				private readonly KnightsAndDiamondsContext context;
-				public UnitOfWork unitOfWork { get; set; }
-        */
         private readonly KnightsAndDiamondsContext _context;
         public IDeckService _deckService { get; set; }
         public DeckController(KnightsAndDiamondsContext context)
         {
             this._context = context;
-            _deckService = new DeckService(this._context);
+            this._deckService = new DeckService(this._context);
         }
 
         [Route("AddDeck/{userID}")]
@@ -79,28 +77,46 @@ namespace knights_and_diamonds.Controllers
                 return BadRequest(e.Message);
             }
         }
-
-        [Route("AddCardToDeck/{cardID}/{deckID}")]
+		
+        [Authorize]
+		[Route("AddCardToDeck/{cardID}/{deckID}")]
         [HttpPost]
         public async Task<IActionResult> AddCardToDeck(int cardID, int deckID)
         {
             try
             {
-                await this._deckService.AddCardToDeck(cardID, deckID);
-                return Ok();
+				var userId = int.Parse(User.FindFirstValue("ID"));
+                if (await this._deckService.UserOwnesDeck(userId, deckID))
+                {
+                    await this._deckService.AddCardToDeck(cardID, deckID);
+                }
+				else
+				{
+					return Unauthorized("User dose not own this deck");
+				}
+				return Ok();
             }
             catch (Exception e)
             {
                 return BadRequest(e.Message);
             }
         }
-        [Route("RemoveCardFromDeck/{cardID}/{deckID}")]
+		[Authorize]
+		[Route("RemoveCardFromDeck/{cardID}/{deckID}")]
         [HttpDelete]
         public async Task<IActionResult> RemoveCardFromDeck(int cardID, int deckID)
         {
             try
             {
-                await this._deckService.RemoveCardFromDeck(cardID, deckID);
+                var userId = int.Parse(User.FindFirstValue("ID"));
+                if (await this._deckService.UserOwnesDeck(userId, deckID))
+                {
+                    await this._deckService.RemoveCardFromDeck(cardID, deckID);
+                }
+                else 
+                {
+					return Unauthorized("User dose not own this deck");
+				}
                 return Ok();
             }
             catch (Exception e)

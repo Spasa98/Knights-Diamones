@@ -228,7 +228,9 @@ button{
   margin-right: 10px;
   margin-left: 20px;
 }
-
+.pages .page.active {
+  color: #52e4f8; /* Change this to the desired color */
+}
 .buttons-user:hover{
   background-color: rgba(82, 228, 248, 0.2);
   transition: 0.3 ease 0s;

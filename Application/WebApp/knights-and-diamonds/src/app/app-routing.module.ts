@@ -59,7 +59,8 @@ const routes: Routes = [
   {
     path: 'deck-create/:deckID',
     component: CardsComponent,
-    
+    canActivate: [AuthGuard],
+    data: { roles: ['Player', 'Admin'] },
     
   },
   {

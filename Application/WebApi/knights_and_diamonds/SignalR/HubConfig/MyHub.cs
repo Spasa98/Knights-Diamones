@@ -66,19 +66,21 @@ namespace SignalR.HubConfig
 			await Clients.Clients(this.Context.ConnectionId).SendAsync("askServerResponse", tempstring);
 			Console.WriteLine(this.Context.ConnectionId);
 		}
+		//signalr konekcija
 		public async Task GetConnection()
 		{
 			await Clients.Caller.SendAsync("GetConnectionID", this.Context.ConnectionId);
 		}
+		//vezivanje konekcije za korisnika
 		public void AddConnection(int userID)
 		{
 			this._connectionService.AddOnlineUser(userID, this.Context.ConnectionId);
 		}
-		public async Task LogIn(UserInfoDTO userInfo)
+		/*public async Task LogIn(UserInfoDTO userInfo)
 		{
 			var t = await this._loginService.Login(userInfo);
 			await Clients.Caller.SendAsync("GetUserToken", t);
-		}
+		}*/
 		public void Echo(string message)
 		{
 			Clients.All.SendAsync("Send", message);

@@ -430,7 +430,7 @@ namespace BLL.Services
             var field = await this._unitOfWork.CardField.GetCardField(cardFieldID,playerID);
             if (field.CardOnField == null)
             {
-                throw new Exception("This card has no effect");
+                throw new Exception("This fielad has no card");
             }
             var effect = await this._unitOfWork.Effect.GetEffect((int)field.CardOnField.Card.EffectID);
             if (listOfCards.First() != 0)

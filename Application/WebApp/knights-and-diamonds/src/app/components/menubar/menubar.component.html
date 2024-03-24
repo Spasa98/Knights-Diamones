@@ -38,10 +38,10 @@
                                 </div>
                         <!-- </div> -->
                         <div class="pages">
-                                <div class="page" (click)="onHome()">Home</div>
-                                <div class="page" (click)="onRules()">Rules</div>
-                                <div class="page" (click)="onCards()">Cards</div>
-                                <div class="page" *ngIf="this.authService?.userValue?.role=='Admin'" (click)="onCreateCard()">Create</div>
+                                <div class="page" [class.active]="activePage === 'home'" (click)="onHome()">Home</div>
+                                <div class="page" [class.active]="activePage === 'rules'" (click)="onRules()">Rules</div>
+                                <div class="page" [class.active]="activePage === 'cards'" (click)="onCards()">Cards</div>
+                                <div class="page" [class.active]="activePage === 'card-create'" *ngIf="this.authService?.userValue?.role=='Admin'" (click)="onCreateCard()">Create</div>
                         </div>
                 </div>
                 <div class="buttons" *ngIf="pom==false">

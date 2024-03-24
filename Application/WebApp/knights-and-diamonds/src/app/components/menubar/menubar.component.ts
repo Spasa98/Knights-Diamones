@@ -20,11 +20,14 @@ export class MenubarComponent implements OnInit, OnDestroy {
   user: any;
   pom:any;
   isItShowen:any=false;
+  activePage:any;
   constructor(
     public authService: AuthService,
     private router: Router,
     private confirmationService: ConfirmationService,
-    private userService: UserService) { }
+    private userService: UserService) { 
+      this.activePage = '';
+    }
 
   ngOnInit(): void {
 
@@ -80,28 +83,34 @@ export class MenubarComponent implements OnInit, OnDestroy {
 
   onHome() {
     if(this.user != undefined) {
+      this.activePage = 'home';
       this.router.navigate(['/home']);
+      
     }
     else this.router.navigate(['/welcome']);
     this.isItShowen=false;
   }
 
   onRules() {
+    this.activePage = 'rules';
     this.router.navigate(['/rules']);
     this.isItShowen=false;
   }
 
   onCards() {
+    this.activePage = 'cards';
     this.router.navigate(['/cards']);
     this.isItShowen=false;
   }
 
   onCreateCard() {
+    this.activePage = 'card-create';
     this.router.navigate(['/card-create']);
     this.isItShowen=false;
   }
 
   onProfile() {
+    this.activePage = '';
     this.router.navigate(['/profil', this.authService.userValue?.id]);
     this.isItShowen=false;
   }
@@ -111,6 +120,8 @@ export class MenubarComponent implements OnInit, OnDestroy {
       message: 'Are you sure you want to log out?',
       accept: () => {
         this.authService.logout();
+        this.activePage = '';
+
         this.router.navigate(['/welcome']);
       }
     });

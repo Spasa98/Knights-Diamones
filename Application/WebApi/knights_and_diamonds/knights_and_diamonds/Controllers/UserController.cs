@@ -14,20 +14,17 @@ namespace knights_and_diamonds.Controllers
     [Route("[controller]")]
     public class UserController : ControllerBase
     {
-        /*
-				private readonly KnightsAndDiamondsContext context;
-				public UnitOfWork unitOfWork { get; set; }
-        */
         private readonly KnightsAndDiamondsContext _context;
         public IUserService _userService { get; set; }
 
         public UserController(KnightsAndDiamondsContext context)
         {
             this._context = context;
-            _userService = new UserService(this._context);
+            this._userService = new UserService(this._context);
         }
 
-        [Route("AddUser")]
+		[AllowAnonymous]
+		[Route("AddUser")]
         [HttpPost]
         public async Task<IActionResult> AddUser([FromBody] UserDTO user)
         {
@@ -83,8 +80,8 @@ namespace knights_and_diamonds.Controllers
 
         }
 
-
-        [Route("WinsAndLosesCount/{userID}")]
+        [AllowAnonymous]
+		[Route("WinsAndLosesCount/{userID}")]
         [HttpGet]
         public async Task<IActionResult> WinsAndLosesCount(int userID)
         {

@@ -33,7 +33,12 @@ namespace BLL.Services
             this._cardService = new CardService(_context);
         }
 
-        public async Task<Deck> AddDeck(int userID)
+		public async Task<bool> UserOwnesDeck(int userID, int deckID)
+        {
+            return await this._unitOfWork.Deck.UserOwnesDeck(userID, deckID);    
+        }
+
+		public async Task<Deck> AddDeck(int userID)
         {
             var deck = new Deck();
             deck.UserID = userID;

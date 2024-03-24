@@ -24,7 +24,7 @@ export class AuthGuard implements CanActivate {
         route.data['roles'] &&
         route.data['roles'].indexOf(user?.role) === -1
       ) {
-        this.router.navigate(['/home']);
+        this.router.navigate(['/error404']);
         return false;
       }
       

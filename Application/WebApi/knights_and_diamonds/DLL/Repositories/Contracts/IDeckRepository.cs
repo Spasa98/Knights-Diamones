@@ -13,5 +13,6 @@ namespace DAL.Repositories.Contracts
         Task<Deck> AddDeck(Deck deck);
         Task<User> SetMainDeck(int userID, int deckID);
         Task<List<CardInDeck>> GetCardsFromDeck(int deckID, int userID);
+        Task<bool> UserOwnesDeck(int userID, int deckID);
 	}
 }
