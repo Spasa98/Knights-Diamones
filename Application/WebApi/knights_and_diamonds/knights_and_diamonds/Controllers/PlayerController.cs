@@ -1,6 +1,4 @@
 ﻿using BLL.Services.Contracts;
-using BLL.Services;
-using DAL.DataContext;
 using Microsoft.AspNetCore.Mvc;
 
 namespace knights_and_diamonds.Controllers
@@ -9,14 +7,10 @@ namespace knights_and_diamonds.Controllers
 	[Route("[controller]")]
 	public class PlayerController : ControllerBase
 	{
-		private readonly KnightsAndDiamondsContext _context;
-		public IGameService _gameservice { get; set; }
-		public IPlayerService _playerservice { get; set; }
-		public PlayerController(KnightsAndDiamondsContext context)
+		private readonly IPlayerService _playerService;
+		public PlayerController(IPlayerService playerService)
 		{
-			this._context = context;
-			this._gameservice = new GameService(this._context);
-			this._playerservice = new PlayerService(this._context);
+			this._playerService = playerService;
 		}
 
 		[Route("GetPlayer/{playerID}")]
@@ -25,7 +19,7 @@ namespace knights_and_diamonds.Controllers
 		{
 			try
 			{
-				var player = await this._playerservice.GetPlayer(playerID);
+				var player = await this._playerService.GetPlayer(playerID);
 				return Ok(player);
 			}
 			catch (Exception e)
@@ -41,8 +35,8 @@ namespace knights_and_diamonds.Controllers
 		{
 			try
 			{
-				var player = await this._playerservice.GetPlayer(playerID);
-				await this._playerservice.SetGameStarted(player);
+				var player = await this._playerService.GetPlayer(playerID);
+				await this._playerService.SetGameStarted(player);
 				return Ok();
 			}
 			catch (Exception e)
@@ -57,7 +51,7 @@ namespace knights_and_diamonds.Controllers
 		{
 			try
 			{
-				return new JsonResult(await this._playerservice.Draw(playerID));
+				return new JsonResult(await this._playerService.Draw(playerID));
 			}
 			catch (Exception e)
 			{
@@ -74,7 +68,7 @@ namespace knights_and_diamonds.Controllers
 				{
 					return BadRequest("Error,wrong playerID");
 				}
-				var nuc = await this._playerservice.GetNumberOfCardsInDeck(playerID);
+				var nuc = await this._playerService.GetNumberOfCardsInDeck(playerID);
 				return Ok(nuc);
 			}
 			catch (Exception e)
@@ -89,7 +83,7 @@ namespace knights_and_diamonds.Controllers
 		{
 			try
 			{
-				var card = await this._playerservice.GetPlayersHand(playerID);
+				var card = await this._playerService.GetPlayersHand(playerID);
 				return Ok(card);
 			}
 			catch (Exception e)
@@ -104,7 +98,7 @@ namespace knights_and_diamonds.Controllers
 		{
 			try
 			{
-				await this._playerservice.SetFieldPosition(playerID, position);
+				await this._playerService.SetFieldPosition(playerID, position);
 				return Ok();
 			}
             catch (Exception e)

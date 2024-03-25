@@ -1,9 +1,5 @@
-﻿using DAL.DataContext;
-using DAL.Models;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Mvc;
 using BLL.Services.Contracts;
-using BLL.Services;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 
@@ -13,12 +9,10 @@ namespace knights_and_diamonds.Controllers
     [Route("[controller]")]
     public class DeckController : ControllerBase
     {
-        private readonly KnightsAndDiamondsContext _context;
-        public IDeckService _deckService { get; set; }
-        public DeckController(KnightsAndDiamondsContext context)
+        private readonly IDeckService _deckService;
+        public DeckController(IDeckService deckService)
         {
-            this._context = context;
-            this._deckService = new DeckService(this._context);
+            this._deckService = deckService;
         }
 
         [Route("AddDeck/{userID}")]

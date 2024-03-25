@@ -1,10 +1,5 @@
 ﻿using BLL.Services.Contracts;
-using BLL.Services;
-using DAL.DataContext;
-using DAL.DesignPatterns.Factory.Contract;
-using DAL.DesignPatterns.Factory;
 using Microsoft.AspNetCore.Mvc;
-using BLL.Strategy;
 
 namespace knights_and_diamonds.Controllers
 {
@@ -12,16 +7,10 @@ namespace knights_and_diamonds.Controllers
 	[Route("[controller]")]
 	public class EffectController : ControllerBase
 	{
-		/*
-				private readonly KnightsAndDiamondsContext context;
-				public UnitOfWork unitOfWork { get; set; }
-		*/
-		private readonly KnightsAndDiamondsContext _context;
-		public IEffectService _effectService { get; set; }
-		public EffectController(KnightsAndDiamondsContext context)
+		private readonly IEffectService _effectService;
+		public EffectController(IEffectService effectService)
 		{
-			this._context = context;
-			_effectService = new EffectService(context);
+			this._effectService = effectService;
 		}
 
 		[Route("GetAreaOfClicking/{effectTypeID}")]

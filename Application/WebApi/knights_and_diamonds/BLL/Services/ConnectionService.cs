@@ -19,41 +19,41 @@ namespace BLL.Services
 	{
 		private readonly KnightsAndDiamondsContext _context;
 		public UnitOfWork _unitOfWork { get; set; }
-		public OnlineUsers _onlineUsers { get; set; }
-		public InGameUsers _inGameUsers { get; set; }
+		public OnlineUsers onlineUsers { get; set; }
+		public InGameUsers inGameUsers { get; set; }
 
         public ConnectionService(KnightsAndDiamondsContext context)
 		{
 			this._context = context;
-			this._unitOfWork = new UnitOfWork(_context);
-			this._onlineUsers = OnlineUsers.GetInstance();
-			this._inGameUsers = InGameUsers.GetInstance();
+			this._unitOfWork = new UnitOfWork(this._context);
+			this.onlineUsers = OnlineUsers.GetInstance();
+			this.inGameUsers = InGameUsers.GetInstance();
 		}
 
 		public void AddOnlineUser(int userID, string connectionId)
 		{
 			List<string> connectionsIDs;
-			if (_onlineUsers.ConnectedUsers.Count < 0)
+			if (this.onlineUsers.ConnectedUsers.Count < 0)
 			{
 				throw new Exception("No one is logged in.");
 			}
-			if (!_onlineUsers.ConnectedUsers.ContainsKey(userID))
+			if (!this.onlineUsers.ConnectedUsers.ContainsKey(userID))
 			{
 				connectionsIDs = new List<string>();
                 connectionsIDs.Add(connectionId);
-				_onlineUsers.ConnectedUsers.Add(userID, connectionsIDs);
+				this.onlineUsers.ConnectedUsers.Add(userID, connectionsIDs);
 			}
-			else if (!_onlineUsers.ConnectedUsers[userID].Contains(connectionId))
+			else if (!this.onlineUsers.ConnectedUsers[userID].Contains(connectionId))
             {
-				_onlineUsers.ConnectedUsers[userID].Add(connectionId);
+				this.onlineUsers.ConnectedUsers[userID].Add(connectionId);
 			}
 		}
 		public List<string> GetConnectionByUser(int UserID)
 		{
 			var cons = new List<string>();
-			if (_onlineUsers.ConnectedUsers.ContainsKey(UserID)) 
+			if (this.onlineUsers.ConnectedUsers.ContainsKey(UserID)) 
 			{ 
-				cons =_onlineUsers.ConnectedUsers[UserID].ToList();
+				cons =this.onlineUsers.ConnectedUsers[UserID].ToList();
 				if (cons == null)
 				{
 					throw new Exception("This user has no connections");
@@ -66,11 +66,11 @@ namespace BLL.Services
 			#pragma warning disable
 			OnlineUserDto onlineUserDto;
 			List<OnlineUserDto> ListOfOnlineUsers = new List<OnlineUserDto>();
-			if (this._onlineUsers.ConnectedUsers.Keys.Count == 0)
+			if (this.onlineUsers.ConnectedUsers.Keys.Count == 0)
 			{
 				throw new Exception("There is no online users");
 			}
-			foreach (var userID in this._onlineUsers.ConnectedUsers.Keys)
+			foreach (var userID in this.onlineUsers.ConnectedUsers.Keys)
 			{
                 var user = await this._unitOfWork.User.GetOne(userID);
                 if (user != null)
@@ -88,13 +88,13 @@ namespace BLL.Services
 		}
 		public void RemoveUserFromOnlineUsers(int userID)
 		{
-			if (_onlineUsers.ConnectedUsers.ContainsKey(userID))
+			if (this.onlineUsers.ConnectedUsers.ContainsKey(userID))
 			{
-				this._onlineUsers.ConnectedUsers.Remove(userID);
-				var lobbies = this._inGameUsers.Lobbies.Where(x => x.User1.ID == userID).ToList();
+				this.onlineUsers.ConnectedUsers.Remove(userID);
+				var lobbies = this.inGameUsers.Lobbies.Where(x => x.User1.ID == userID).ToList();
 				foreach (var lobby in lobbies)
 				{
-					this._inGameUsers.Lobbies.Remove(lobby);
+					this.inGameUsers.Lobbies.Remove(lobby);
 				}
 			}
 		}

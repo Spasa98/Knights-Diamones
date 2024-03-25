@@ -2,34 +2,27 @@
 using BLL.Services;
 using DAL.DataContext;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.IdentityModel.Tokens;
-using Newtonsoft.Json.Linq;
 using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using System.Text;
 using DAL.DTOs;
-
-using DAL.Models;
-using Microsoft.AspNetCore.SignalR;
-using SignalR.HubConfig;
 
 namespace knights_and_diamonds.Controllers
 {
     public class LoginController : ControllerBase
     {
-        private readonly IConfiguration _config;
-        private readonly KnightsAndDiamondsContext _context;
-        public IUserService _userService { get; set; }
-		public ILoginService _loginService { get; set; }
-		public IConnectionService _connetionService { get; set; }
+		private readonly KnightsAndDiamondsContext _context;
+		private readonly IConfiguration _config;
+		private readonly ILoginService _loginService;
+		private readonly IConnectionService _connectionService;
 
-		public LoginController(KnightsAndDiamondsContext context, IConfiguration config, IHubContext<MyHub> HubContext)
+		public LoginController(
+			KnightsAndDiamondsContext context, 
+			IConfiguration config,
+			IConnectionService connectionService)
         {
-            this._context = context;
-            _userService = new UserService(this._context);
-			_connetionService = new ConnectionService(this._context);
-			_config = config;
-			_loginService = new LoginService(this._context, this._config);
+			this._config = config;
+			this._context = context;
+			this._connectionService = connectionService;
+			this._loginService = new LoginService(this._context, this._config);
 		}
 
 		public static long CheckLoginToken(string token) 
@@ -80,7 +73,7 @@ namespace knights_and_diamonds.Controllers
 		{
             try
             {
-				this._connetionService.RemoveUserFromOnlineUsers(userID);
+				this._connectionService.RemoveUserFromOnlineUsers(userID);
                 return Ok();
             }
             catch(Exception e)
@@ -95,7 +88,7 @@ namespace knights_and_diamonds.Controllers
 		{
 			try
 			{
-				var c =  this._connetionService.GetConnectionByUser(UserID);
+				var c =  this._connectionService.GetConnectionByUser(UserID);
 
 				return new JsonResult(c);
 			}

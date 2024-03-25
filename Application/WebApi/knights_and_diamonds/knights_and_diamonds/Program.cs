@@ -13,6 +13,7 @@ using DAL.Models;
 using SignalR.GameHub;
 using Microsoft.AspNetCore.Http.Features;
 using Microsoft.Extensions.FileProviders;
+using DAL.UnitOfWork;
 
 var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
 
@@ -83,9 +84,23 @@ builder.Services.AddSwaggerGen();
 //connectig your database
 builder.Services.AddDbContext<KnightsAndDiamondsContext>(opt => opt.UseSqlServer(builder.Configuration.GetConnectionString("Konekcija")));
 builder.Services.AddTransient(typeof(IRepository<>), typeof(Repository<>));
+builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
 
-builder.Services.AddScoped(typeof(ICardService),typeof(CardService));
+builder.Services.AddScoped<ICardService,CardService>();
+builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IGameService, GameService>();
+builder.Services.AddScoped<IPlayerService, PlayerService>();
+builder.Services.AddScoped<ITurnService, TurnService>();
+builder.Services.AddScoped<IEffectService, EffectService>();
+builder.Services.AddScoped<IRPSGameService, RPSGameService>();
+builder.Services.AddScoped<IConnectionService, ConnectionService>();
+builder.Services.AddScoped<IDeckService, DeckService>();
+
+
+
+
+
 
 var app = builder.Build();
 

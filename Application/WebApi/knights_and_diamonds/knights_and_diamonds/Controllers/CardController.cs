@@ -1,35 +1,19 @@
-
-using BLL.Services;
 using BLL.Services.Contracts;
-using DAL.DataContext;
-using DAL.DesignPatterns.Factory;
-using DAL.DesignPatterns.Factory.Contract;
 using DAL.DTOs;
-using DAL.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Data;
 #pragma warning disable
+
 namespace knights_and_diamonds.Controllers
 {
 	[ApiController]
 	[Route("[controller]")]
 	public class CardController : ControllerBase
 	{
-		/*
-				private readonly KnightsAndDiamondsContext context;
-				public UnitOfWork unitOfWork { get; set; }
-		*/
-		private readonly KnightsAndDiamondsContext _context;
-		public ICardService _cardService { get; set; }
-		public IEffectService _effService { get; set; }
-		public IEffectFactory _descriptionFactory { get; set; }
-		public CardController(KnightsAndDiamondsContext context)
+		private readonly ICardService _cardService;
+		public CardController(ICardService cardService)
 		{
-			this._context = context;
-			_cardService = new CardService(this._context);
-			_descriptionFactory = new ConcreteEffectFactory();
-			_effService = new EffectService(this._context);
+			this._cardService = cardService;
 		}
 
         [Authorize(Roles = "Admin")]
@@ -130,7 +114,7 @@ namespace knights_and_diamonds.Controllers
 			}
 		}
 
-        [Authorize(Roles = "Admin")]
+/*        [Authorize(Roles = "Admin")]
         [Route("AddCardType")]
 		[HttpPost]
 		public async Task<IActionResult> AddCardType([FromBody] CardType type)
@@ -146,7 +130,7 @@ namespace knights_and_diamonds.Controllers
 			{
 				return BadRequest(e);
 			}
-		}
+		}*/
 
         [Route("GetAllCards")]
         [HttpGet]

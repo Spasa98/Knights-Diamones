@@ -17,12 +17,10 @@ namespace BLL.Strategy
 	{
 		private readonly KnightsAndDiamondsContext _context;
 		public UnitOfWork _unitOfWork { get; set; }
-		public IPlayerService _playerService { get; set; }
 		public ReturnCardFromFieldExecution(KnightsAndDiamondsContext context)
 		{
 			this._context = context;
-			this._unitOfWork = new UnitOfWork(_context);
-			this._playerService = new PlayerService(this._context);
+			this._unitOfWork = new UnitOfWork(this._context);
 		}
 		public ChooseCardsFrom SelectCardsFrom()
 

@@ -1,13 +1,6 @@
-﻿using BLL.Services;
-using BLL.Services.Contracts;
-using DAL.DataContext;
-using DAL.DesignPatterns;
+﻿using BLL.Services.Contracts;
 using DAL.DTOs;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.SignalR;
-using Microsoft.EntityFrameworkCore;
-using SignalR.HubConfig;
-using System.Runtime.CompilerServices;
 
 namespace knights_and_diamonds.Controllers
 {
@@ -20,38 +13,15 @@ namespace knights_and_diamonds.Controllers
 			public FieldDTO PlayerField { get; set; }
 			public EnemiesFieldDTO EnemiesField { get; set; }
 		}
-		private readonly KnightsAndDiamondsContext _context;
-        public IGameService _gameservice { get; set; }
-        public IPlayerService _playerservice { get; set; }
-		public ITurnService _turnService { get; set; }
+        private readonly IGameService _gameService;	
+		private readonly ITurnService _turnService;
 
-		public MyHub _hubContext { get; set; }
-		private readonly IConfiguration _config;
-
-		public GameController(KnightsAndDiamondsContext context, IConfiguration config)
+		public GameController(IGameService gameService,ITurnService turnService)
 		{
-			this._context = context;
-			this._config = config;
-			this._gameservice = new GameService(this._context);
-			this._playerservice = new PlayerService(this._context);
-			this._turnService = new TurnService(this._context);
+			this._gameService = gameService;
+			this._turnService = turnService;
 
-			this._hubContext = new MyHub(context,_config);
 		}
-		/*[Route("StartGame/{player1ID}/{player2ID}")]
-        [HttpPost]
-        public async Task<IActionResult> StartGame(int player1ID, int player2ID)
-        {
-            try
-            {
-                var game = await this._gameservice.StartGame(player1ID, player2ID);
-                return Ok(game);
-            }
-            catch (Exception e)
-            {
-                return BadRequest(e.Message);
-            }
-        }*/
 
 		[Route("GetGame/{gameID}/{userID}")]
 		[HttpGet]
@@ -59,7 +29,7 @@ namespace knights_and_diamonds.Controllers
 		{
 			try
 			{
-				var game = await this._gameservice.GetGame(gameID, userID);
+				var game = await this._gameService.GetGame(gameID, userID);
 				return Ok(game);
 
 			}
@@ -77,9 +47,9 @@ namespace knights_and_diamonds.Controllers
 			{
 				var field = new Field();
 				
-				var playersField = await this._gameservice.GetPlayersField(playerID);
-				var f = await this._gameservice.GetPlayersField(enemiesPlayerID);
-				var enemiesField = this._gameservice.GetEneiesField(f);
+				var playersField = await this._gameService.GetPlayersField(playerID);
+				var f = await this._gameService.GetPlayersField(enemiesPlayerID);
+				var enemiesField = this._gameService.GetEneiesField(f);
 
 				field.PlayerField = playersField;
 				field.EnemiesField = enemiesField;
@@ -99,8 +69,8 @@ namespace knights_and_diamonds.Controllers
 		{
 			try
 			{
-				var field = await this._gameservice.GetPlayersField(playerID);
-				var enemiesField = this._gameservice.GetEneiesField(field);
+				var field = await this._gameService.GetPlayersField(playerID);
+				var enemiesField = this._gameService.GetEneiesField(field);
 				return Ok(enemiesField);
 			}
 			catch (Exception e)
@@ -109,21 +79,6 @@ namespace knights_and_diamonds.Controllers
 			}
 		}
 
-	/*	[Route("GetGamePhase/{gameID}")]
-		[HttpGet]
-		public async Task<IActionResult> GetGamePhase(int gameID)
-		{
-			try
-			{
-				var gp=await this._turnService.GetTurnPhase(gameID);
-				return Ok(gp);
-
-			}
-			catch (Exception e)
-			{
-				return BadRequest(e.Message);
-			}
-		}*/
 		[Route("GetTurnInfo/{gameID}/{playerID}")]
 		[HttpGet]
 		public async Task<IActionResult> GetTurnInfo(int gameID,int playerID)
@@ -139,21 +94,6 @@ namespace knights_and_diamonds.Controllers
 				return BadRequest(e.Message);
 			}
 		}
-/*		[Route("NewTurn/{gameID}")]
-		[HttpPost]
-		public async Task<IActionResult> NewTurn(int gameID)
-		{
-			try
-			{
-				var turnInfo = await this._turnService.NewTurn(gameID);
-				return Ok(turnInfo);
-
-			}
-			catch (Exception e)
-			{
-				return BadRequest(e.Message);
-			}
-		}*/
 
 		[Route("GetGrave/{gameID}")]
 		[HttpGet]
@@ -161,7 +101,7 @@ namespace knights_and_diamonds.Controllers
 		{
 			try
 			{
-				var grave = await this._gameservice.GetGamesGrave(gameID);
+				var grave = await this._gameService.GetGamesGrave(gameID);
 				return Ok(grave);
 
 			}
@@ -171,29 +111,13 @@ namespace knights_and_diamonds.Controllers
 			}
 		}
 
-		/*	[Route("GetHand/{gameID}/{playerID}")]
-			[HttpGet]
-			public async Task<IActionResult> GetHand(int gameID,int playerID)
-			{
-				try
-				{
-					await this._hubContext.StartingDrawing(gameID, playerID);
-					return Ok("bravo");
-
-				}
-				catch (Exception e)
-				{
-					return BadRequest(e.Message);
-				}
-			}*/
-
 		[Route("GetHand/{gameID}")]
 		[HttpGet]
 		public async Task<IActionResult> GetGameGroup(int gameID)
 		{
 			try
 			{
-				var gg=await this._gameservice.GameGroup(gameID);
+				var gg=await this._gameService.GameGroup(gameID);
 				return Ok(gg);
 
 			}
@@ -210,7 +134,7 @@ namespace knights_and_diamonds.Controllers
             try
             {
 				#pragma warning disable
-                var graveStats = await this._gameservice.GetGrave(gameID,typeFilter,pageSize,pageNumber);
+                var graveStats = await this._gameService.GetGrave(gameID,typeFilter,pageSize,pageNumber);
                 return Ok(graveStats);
 
             }

@@ -433,7 +433,7 @@ namespace BLL.Services
                 throw new Exception("This fielad has no card");
             }
             var effect = await this._unitOfWork.Effect.GetEffect((int)field.CardOnField.Card.EffectID);
-            if (listOfCards.First() != 0)
+            if (listOfCards.First() != 0)//0 je za karte kao sto su draw 2 cards.
             {
                 if (effect.NumOfCardsAffected != listOfCards.Count)
                 {

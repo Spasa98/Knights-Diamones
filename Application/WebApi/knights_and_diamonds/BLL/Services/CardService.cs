@@ -4,14 +4,7 @@ using DAL.DesignPatterns.Factory;
 using DAL.DesignPatterns.Factory.Contract;
 using DAL.DTOs;
 using DAL.Models;
-using DAL.Repositories;
 using DAL.UnitOfWork;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Linq.Expressions;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BLL.Services
 {

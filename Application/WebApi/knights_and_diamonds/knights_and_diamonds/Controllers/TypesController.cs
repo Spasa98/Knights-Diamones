@@ -14,11 +14,11 @@ namespace knights_and_diamonds.Controllers
 	public class TypesController : ControllerBase
 	{
 		private readonly KnightsAndDiamondsContext _context;
-		public IEffectService _effectService { get; set; }
-		public TypesController(KnightsAndDiamondsContext context)
+		private readonly IEffectService _effectService;
+		public TypesController(KnightsAndDiamondsContext context, IEffectService effectService)
 		{
 			this._context = context;
-			this._effectService = new EffectService(context);
+			this._effectService = effectService;
 		}
 
 		[Route("AddEffectType")]

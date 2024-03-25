@@ -1,14 +1,6 @@
 ﻿using BLL.Services.Contracts;
-using BLL.Services;
-using DAL.DataContext;
 using Microsoft.AspNetCore.Mvc;
-using DAL.Models;
-using DAL.DesignPatterns;
-using static System.Text.Json.JsonSerializer;
-using System.Runtime.Intrinsics.X86;
 using DAL.DTOs;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 namespace knights_and_diamonds.Controllers
 {
@@ -16,15 +8,13 @@ namespace knights_and_diamonds.Controllers
 	[Route("[controller]")]
 	public class RPSGameController : ControllerBase
 	{
-		private readonly KnightsAndDiamondsContext _context;
-		public IRPSGameService _pregameservice { get; set; }
-		public IUserService _userService { get; set; }
+		private readonly IRPSGameService _rpsGameService;
+		private readonly IUserService _userService;
 
-		public RPSGameController(KnightsAndDiamondsContext context)
+		public RPSGameController(IRPSGameService rpsGameService,IUserService userService)
 		{
-			this._context = context;
-			_pregameservice = new RPSGameService(this._context);
-			_userService = new UserService(this._context);
+			this._rpsGameService = rpsGameService;
+			this._userService = userService;
 		}
 
 		[Route("NewLobby")]
@@ -52,7 +42,7 @@ namespace knights_and_diamonds.Controllers
 
 				if (user != null && challengedUser!=null)
 				{
-					var lobbyID = this._pregameservice.NewLobby(player1, player2);
+					var lobbyID = this._rpsGameService.NewLobby(player1, player2);
 					return Ok(lobbyID);
 				}
 				else 
@@ -72,7 +62,7 @@ namespace knights_and_diamonds.Controllers
 		{
 			try
 			{
-				var game = await this._pregameservice.StartGame(lobbyID);
+				var game = await this._rpsGameService.StartGame(lobbyID);
 				return Ok(game);
 			}
 			catch (Exception e)
@@ -87,7 +77,7 @@ namespace knights_and_diamonds.Controllers
 		{
 			try
 			{
-				var games =  this._pregameservice.GetGames();
+				var games =  this._rpsGameService.GetGames();
 				return new JsonResult(games);
 			}
 			catch (Exception e)
@@ -102,7 +92,7 @@ namespace knights_and_diamonds.Controllers
 		{
 			try
 			{
-				var game = await this._pregameservice.GetGame(gameID,userID);
+				var game = await this._rpsGameService.GetGame(gameID,userID);
 				return Ok(game);
 				
 			}
@@ -117,7 +107,7 @@ namespace knights_and_diamonds.Controllers
 		{
 			try
 			{
-				var move=await this._pregameservice.GetPlayersMove(playerID);
+				var move=await this._rpsGameService.GetPlayersMove(playerID);
 				return Ok(move);
 
 			}
@@ -136,7 +126,7 @@ namespace knights_and_diamonds.Controllers
 				var user = await this._userService.GetUserByID(userID);
 				if (user != null)
 				{
-					var games = this._pregameservice.LobbiesPerUser(userID);
+					var games = this._rpsGameService.LobbiesPerUser(userID);
 					return new JsonResult(games);
 				}
 				else 
@@ -156,7 +146,7 @@ namespace knights_and_diamonds.Controllers
 		{
             try
             {
-				var game = this._pregameservice.DenyGame(lobbyID);
+				var game = this._rpsGameService.DenyGame(lobbyID);
 				return Ok(game);
             }
             catch (Exception e)
@@ -171,7 +161,7 @@ namespace knights_and_diamonds.Controllers
         {
             try
             {
-                var userIDs = await this._pregameservice.RedirectToGame(gameID);
+                var userIDs = await this._rpsGameService.RedirectToGame(gameID);
                 return Ok(userIDs);
             }
             catch (Exception e)
@@ -186,7 +176,7 @@ namespace knights_and_diamonds.Controllers
 		{
             try
             {
-                await this._pregameservice.PlayMove(playerID, moveName);
+                await this._rpsGameService.PlayMove(playerID, moveName);
 				return Ok();
             }
             catch (Exception e)
@@ -201,7 +191,7 @@ namespace knights_and_diamonds.Controllers
         {
             try
             {
-				var winner = await this._pregameservice.CheckRPSWinner(gameID);
+				var winner = await this._rpsGameService.CheckRPSWinner(gameID);
                 return Ok(winner);
             }
             catch (Exception e)
@@ -216,7 +206,7 @@ namespace knights_and_diamonds.Controllers
 		{
 			try
 			{
-				var player = await this._pregameservice.GetPlayer(gameID, userID);
+				var player = await this._rpsGameService.GetPlayer(gameID, userID);
 				return Ok(player);
 			}
 			catch (Exception e)
@@ -231,7 +221,7 @@ namespace knights_and_diamonds.Controllers
 		{
 			try
 			{
-				this._pregameservice.RemoveUserFromUsersInGame(userID);
+				this._rpsGameService.RemoveUserFromUsersInGame(userID);
 				return Ok();
 			}
             catch (Exception e)

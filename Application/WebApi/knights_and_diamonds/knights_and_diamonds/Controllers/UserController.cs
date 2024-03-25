@@ -1,10 +1,5 @@
 ﻿using BLL.Services.Contracts;
-using BLL.Services;
-using DAL.DataContext;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Cors;
-using System.IdentityModel.Tokens.Jwt;
-using DAL.Models;
 using DAL.DTOs;
 using Microsoft.AspNetCore.Authorization;
 
@@ -14,13 +9,11 @@ namespace knights_and_diamonds.Controllers
     [Route("[controller]")]
     public class UserController : ControllerBase
     {
-        private readonly KnightsAndDiamondsContext _context;
-        public IUserService _userService { get; set; }
+        private readonly IUserService _userService;
 
-        public UserController(KnightsAndDiamondsContext context)
+        public UserController(IUserService userService)
         {
-            this._context = context;
-            this._userService = new UserService(this._context);
+            this._userService = userService;
         }
 
 		[AllowAnonymous]

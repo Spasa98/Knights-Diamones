@@ -1,56 +1,49 @@
 ﻿using BLL.Services;
 using BLL.Services.Contracts;
 using DAL.DataContext;
-using DAL.DesignPatterns;
 using DAL.DTOs;
-using DAL.Migrations;
-using DAL.Models;
-using Microsoft.AspNetCore.Connections;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net.WebSockets;
-using System.Runtime.Intrinsics.X86;
-using System.Text;
-using System.Threading.Tasks;
 using static BLL.Services.Contracts.IGameService;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 #pragma warning disable
 
 namespace SignalR.HubConfig
 {
 	public class MyHub : Hub
 	{
-		private readonly IConfiguration _config;
-
 		private readonly KnightsAndDiamondsContext _context;
-		public IUserService _userService { get; set; }
-		public IPlayerService _playerService { get; set; }
-		public IConnectionService _connectionService { get; set; }
-		public IRPSGameService _rpsGameService { get; set; }
-		public ILoginService _loginService { get; set; }
-		public IGameService _gameService { get; set; }
-		public ITurnService _turnService { get; set; }
-
+		private readonly IConfiguration _config;
+		private readonly IUserService _userService;
+		private readonly IPlayerService _playerService;
+		private readonly IConnectionService _connectionService;
+		private readonly IRPSGameService _rpsGameService;
+		private readonly ILoginService _loginService;
+		private readonly IGameService _gameService;
+		private readonly ITurnService _turnService;
 		public ConnectionsHub _connectedUsers { get; set; }
 
-		public MyHub(KnightsAndDiamondsContext context, IConfiguration config)
+
+		public MyHub(
+			KnightsAndDiamondsContext context,
+			IConfiguration config,
+			IUserService userService,
+			IPlayerService playerService,
+			IConnectionService connectionService,
+			IRPSGameService rpsGameService,
+			IGameService gameService,
+			ITurnService turnService)
 		{
 			this._context = context;
 			this._config = config;
-			this._userService = new UserService(this._context);
-			this._connectionService = new ConnectionService(this._context);
-			this._rpsGameService = new RPSGameService(this._context);
+			this._userService = userService;
+			this._playerService = playerService;
+			this._connectionService = connectionService;
+			this._rpsGameService = rpsGameService;
+			this._gameService = gameService;
+			this._turnService = turnService;
 			this._loginService = new LoginService(this._context, this._config);
 			this._connectedUsers = ConnectionsHub.GetInstance();
-			this._gameService = new GameService(this._context);
-			this._playerService = new PlayerService(this._context);
-			this._turnService = new TurnService(this._context);
 		}
 		public async Task askServer(string someTextForClient)
 		{
@@ -76,11 +69,6 @@ namespace SignalR.HubConfig
 		{
 			this._connectionService.AddOnlineUser(userID, this.Context.ConnectionId);
 		}
-		/*public async Task LogIn(UserInfoDTO userInfo)
-		{
-			var t = await this._loginService.Login(userInfo);
-			await Clients.Caller.SendAsync("GetUserToken", t);
-		}*/
 		public void Echo(string message)
 		{
 			Clients.All.SendAsync("Send", message);
